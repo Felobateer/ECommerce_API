@@ -1,16 +1,16 @@
 security:
   password_hashers:
     App\Entity\User:
-      algorithm: auto
+      algorithm: auto # Use auto for the best algorithm selection
 
   providers:
     database_provider:
+      # Doctrine user provider
       entity:
         class: App\Entity\User
-        property: email
+        property: email # Assuming email is the unique identifier
 
   firewalls:
-    # Define firewalls for login, logout, etc.
     main:
       pattern: ^/
       form_login:

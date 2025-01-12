@@ -18,5 +18,5 @@ security:
         check_path: app_login
         default_target_path: app_dashboard
       logout:
-        path: app_logout
+        path: /logout
         target: app_homepage

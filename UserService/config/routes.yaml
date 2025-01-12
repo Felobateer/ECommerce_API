@@ -7,3 +7,33 @@ controllers:
 app_login:
   path: /login
   controller: App\Controller\SecurityController::login
+
+# Get user by ID
+get_user_by_id:
+  path: /user/{id}
+  controller: App\Controller\UserController::getUserById
+  methods: GET
+
+# Get user by email
+get_user_by_email:
+  path: /user/email/{email}
+  controller: App\Controller\UserController::getUserByEmail
+  methods: GET
+
+# Get all users
+get_all_users:
+  path: /users
+  controller: App\Controller\UserController::getAllUsers
+  methods: GET
+
+# Edit user
+edit_user:
+  path: /user/{id}/edit
+  controller: App\Controller\UserController::editUser
+  methods: PUT
+
+# Delete user
+delete_user:
+  path: /user/{id}/delete
+  controller: App\Controller\UserController::deleteUser
+  methods: DELETE
