@@ -1,0 +1,40 @@
+[package]
+name = "UserService"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Actix web framework
+actix-web = "4.0"
+
+# Asynchronous runtime
+tokio = { version = "1.0", features = ["full"] }
+
+# JSON support
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Database support (e.g., SQLx for async database interactions)
+sqlx = { version = "0.7", features = ["mysql", "runtime-tokio-native-tls"] }
+
+# Logging and tracing
+env_logger = "0.10"
+tracing = "0.1"
+tracing-actix-web = "0.6"
+
+# Environment variable management
+dotenvy = "0.15"
+
+# Security (e.g., for password hashing)
+argon2 = "0.4"
+
+# Middleware for CORS
+actix-cors = "0.6"
+
+# Testing
+actix-rt = "2.8"
+reqwest = { version = "0.11", features = ["json"] }
+
+[dev-dependencies]
+# Test utilities
+tokio = { version = "1.0", features = ["test"] }
