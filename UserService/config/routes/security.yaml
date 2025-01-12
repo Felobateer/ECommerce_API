@@ -1,3 +1,22 @@
 _security_logout:
-    resource: security.route_loader.logout
-    type: service
+  resource: security.route_loader.logout
+  type: service
+
+security:
+  providers:
+    app_user_provider:
+      entity:
+        class: App\Entity\User
+        property: email
+
+  firewalls:
+    main:
+      pattern: ^/
+      anonymous: true
+      form_login:
+        login_path: app_login
+        check_path: app_login
+        default_target_path: app_dashboard
+      logout:
+        path: app_logout
+        target: app_homepage
