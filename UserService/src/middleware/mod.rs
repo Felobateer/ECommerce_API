@@ -61,3 +61,21 @@ where
         })
     }
 }
+
+pub async fn is_token_blacklisted(
+    db_pool: &sqlx::MySqlPool,
+    token: &str,
+) -> Result<bool, sqlx::Error> {
+    let result = sqlx::query!(
+        r#"
+        SELECT COUNT(*) as count FROM token_blacklist 
+        WHERE token = ? AND expires_at > ?
+        "#,
+        token,
+        Utc::now() // Current time
+    )
+    .fetch_one(db_pool)
+    .await?;
+
+    Ok(result.count > 0)
+}
