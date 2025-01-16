@@ -1,13 +1,20 @@
 use axum::{
     body::Body,
-    http::Request,
+    http::{Request, StatusCode},
     middleware::Next,
-    response::Response,
+    response::{Response, IntoResponse},
+    extract::State,
 };
 use futures::future::{BoxFuture, FutureExt};
 use sqlx::MySqlPool;
 use chrono::Utc;
 use tracing::info;
+use crate::services::user_service::authenticate;
+
+#[derive(Clone)]
+pub struct AppState {
+    pub db_pool: MySqlPool,
+}
 
 pub struct LoggerMiddleware;
 
@@ -15,6 +22,7 @@ impl LoggerMiddleware {
     pub async fn handle<B>(
         req: Request<B>,
         next: Next<B>,
+        State(app_state): State<AppState>,
     ) -> Response {
         let method = req.method().clone();
         let path = req.uri().path().to_string();
@@ -22,14 +30,35 @@ impl LoggerMiddleware {
         // Log the request details
         info!("Incoming request: {} {}", method, path);
 
-        // Proceed to the next middleware or handler
-        let response = next.run(req).await;
+        // Check for authentication token (if needed)
+        if let Some(auth_header) = req.headers().get("Authorization") {
+            let token = auth_header.to_str().unwrap_or_default().trim_start_matches("Bearer ");
 
-        // Log the response status
-        let status = response.status();
-        info!("Response status: {}", status);
+            match authenticate(&app_state.db_pool, token).await {
+                Ok(is_valid) if is_valid => {
+                    // Proceed if token is valid
+                    let response = next.run(req).await;
 
-        response
+                    // Log the response status
+                    let status = response.status();
+                    info!("Response status: {}", status);
+
+                    return response;
+                }
+                Ok(_) => {
+                    info!("Authentication failed for token: {}", token);
+                    return (StatusCode::UNAUTHORIZED, "Unauthorized").into_response();
+                }
+                Err(err) => {
+                    eprintln!("Error during authentication: {:?}", err);
+                    return (StatusCode::INTERNAL_SERVER_ERROR, "Internal server error").into_response();
+                }
+            }
+        }
+
+        // If no Authorization header is present
+        info!("No Authorization header found.");
+        (StatusCode::UNAUTHORIZED, "Unauthorized").into_response()
     }
 }
 
