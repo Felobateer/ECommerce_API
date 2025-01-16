@@ -3,7 +3,7 @@ use axum::{
     http::StatusCode,
     response::{Json, IntoResponse},
     routing::get,
-    Router,
+    Router, Server,
 };
 use dotenvy::dotenv;
 use serde::Serialize;
@@ -12,7 +12,7 @@ use std::{env, net::SocketAddr};
 use uuid::Uuid;
 
 mod db;
-// mod services;
+mod services;
 
 #[derive(Clone)]
 struct AppState {
@@ -21,6 +21,7 @@ struct AppState {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Load environment variables
     dotenv().ok();
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
 
@@ -39,8 +40,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Start the server
     let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
-    println!("Server running on {}", addr);
-    axum::Server::bind(&addr)
+    println!("Server running on http://{}", addr);
+    Server::bind(&addr)
         .serve(app.into_make_service())
         .await?;
 
