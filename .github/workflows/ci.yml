@@ -21,9 +21,9 @@ jobs:
       - name: Build images inside Minikube
         run: |
           eval $(minikube -p minikube docker-env)
-          docker build -t cart-service:v1 ./CartService
-          docker build -t product-service:v1 ./ProductService
-          docker build -t user-service:v1 ./UserService
+          docker build -t cart-service:latest ./CartService
+          docker build -t product-service:latest ./ProductService
+          docker build -t user-service:latest ./UserService
 
       - name: Apply Kubernetes manifests
         run: kubectl apply -f k8s/base -R
