@@ -18,5 +18,5 @@ RUN apk add --no-cache ca-certificates
 
 COPY --from=builder /app/target/release/user_service ./user_service
 
-EXPOSE 3000
+EXPOSE 3002
 CMD ["./user_service"]

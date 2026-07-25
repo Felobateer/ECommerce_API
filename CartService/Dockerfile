@@ -18,5 +18,5 @@ RUN apk add --no-cache ca-certificates
 
 COPY --from=builder /app/target/release/cart_service ./cart_service
 
-EXPOSE 3000
+EXPOSE 3001
 CMD ["./cart_service"]

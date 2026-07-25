@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, dev]
+
+jobs:
+  build:
+    name: Build Stage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Build docker images
+        run: |
+          docker build -t cart_service:v1 ./CartService
+          docker build -t product_service:v1 ./ProductService
+          docker build -t user_service:v1 ./UserService
+  deploy:
+    name: Deploy Stage
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Start Minikube
+        run: minikube start
+
+      - name: Check Minikube
+        run: minikube status
+      
+      - name: Run app
+        run: kubectl get pods -A

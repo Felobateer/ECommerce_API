@@ -1,0 +1,25 @@
+apiVersion: app/v1
+kind: Deployment
+metadata:
+  name: cart-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels: 
+      app: cart-service
+  template:
+    metadata: 
+      labels:
+        app: cart-service
+    spec:
+      containers:
+        - name: cart-service
+          image: root/cart-service:latest
+          ports: 
+            - containerPort: 3001
+          env:
+            - name: DB_URL
+              valueFrom: 
+                secretKeyRef: 
+                  name: app-secrets
+                  key: DB_URL

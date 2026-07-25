@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  LOG_LEVEL: "info"
+  APP_ENV: "dev"
+  RATE_LIMIT: 100
+  ALLOWED_ORIGINS: "http://localhost:5000"
+  BASE_URL: "http://localhost"
