@@ -6,6 +6,6 @@ spec:
   type: ClusterIP
   selector: 
     app: user-service
-    ports:
-      - port: 3002
-        targetPort: 3002
+  ports:
+    - port: 3002
+      targetPort: 3002
